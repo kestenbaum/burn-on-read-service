@@ -1,12 +1,14 @@
 import express from "express";
 import nunjucks from "nunjucks";
 import path from "path";
-
+import { v4 } from "uuid";
+import { burnOnReadMiddleware } from "./middlewares/burnOnReadMiddleware";
+import { BurnRequest, messages } from "./types";
 import type { Request, Response } from "express";
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
-const viewsPath = path.join(__dirname, 'view');
+const viewsPath = path.join(process.cwd(), 'src/view');
 
 nunjucks.configure(viewsPath, {
     autoescape: true,
@@ -19,15 +21,22 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 app.post("/create", (req: Request, res: Response) => {
-    const input = req.body.text;
-    const message = "temporary-id";
+    const userInput = req.body.message;
+    const messageId = v4();
+    messages[messageId] = userInput.trim();
 
-    const shareLink = `http://${req.get('host')}/message/${message}`;
-
-    res.render('link.html', { 
-        shareLink,
-    });
+    const shareLink = `${req.protocol}://${req.get('host')}/message/${messageId}`;
+    res.render('link.html', { shareLink: shareLink });
 })
+
+app.get('/message/:id', 
+    burnOnReadMiddleware,
+    (req: BurnRequest, res: Response) => {
+        res.render('read.html', {
+            content: req.messageContent
+        });
+    }
+);
 
 app.listen(3000, "0.0.0.0", () => {
     console.log("server listen")

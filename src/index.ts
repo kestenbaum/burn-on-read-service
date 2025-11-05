@@ -32,7 +32,7 @@ app.post("/create", (req: Request, res: Response) => {
     messages[messageId] = userInput.trim();
 
     const shareLink = `${req.protocol}://${req.get('host')}/message/${messageId}`;
-    res.render('link.html', { shareLink: shareLink });
+    res.render('link.html', { shareLink });
 })
 
 app.get('/message/:id', 

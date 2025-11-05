@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends "_layout.html" %}
+{% block content %}
+ <article id="article">
     <h2>Nachricht automatisch gelöscht!</h2>
-    {{ content }}
-    <a href="/">Create new</a>
-</body>
-</html>
+        <p> Deleted: <del>{{ content }}</del></p>
+    <footer>
+        <a href="/" role="button">Create new</a>
+    </footer>
+</article>
+{% endblock %}

@@ -22,7 +22,8 @@
   "homepage": "https://github.com/kestenbaum/burn-on-read-service#readme",
   "dependencies": {
     "express": "^5.1.0",
-    "nunjucks": "^3.2.4"
+    "nunjucks": "^3.2.4",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.5",

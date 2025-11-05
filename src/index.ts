@@ -5,10 +5,16 @@ import { v4 } from "uuid";
 import { burnOnReadMiddleware } from "./middlewares/burnOnReadMiddleware";
 import { BurnRequest, messages } from "./types";
 import type { Request, Response } from "express";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
-app.use(express.urlencoded({ extended: true }));
+const PORT = Number(process.env.PORT) || 3001
 const viewsPath = path.join(process.cwd(), 'src/view');
+
+
+app.use(express.urlencoded({ extended: true }));
+
 
 nunjucks.configure(viewsPath, {
     autoescape: true,
@@ -38,6 +44,6 @@ app.get('/message/:id',
     }
 );
 
-app.listen(3000, "0.0.0.0", () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log("server listen")
 })

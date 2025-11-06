@@ -1,8 +1,44 @@
 {% extends "_layout.html"%}
 {% block content %}
-    <article style="text-align: center;">
-        <a href="{{ shareLink }}" role="button">
-            To Read: {{ shareLink }}
-        </a>
+<article>
+        <h2>Viewing link created!</h2>
+        
+        <label for="share-input">
+            <small>Your one-time link (click to copy):</small>
+        </label>
+        
+        <input type="text" id="share-input" value="{{ shareLink }}" readonly onclick="this.select()">
+
+        <div class="grid">
+            <button id="copy-button" class="contrast" onclick="copyLink()">
+               Сopy to clipboard
+            </button>
+
+            <a href="/" role="button" class="secondary">
+                Create new 
+            </a>
+        </div>
+
+        <small id="copy-status" style="display: none; color: var(--pico-color-success); margin-top: 10px;">
+            ✅ Link copied!
+        </small>
     </article>
+
+    <script>
+        function copyLink() {
+            const copyText = document.getElementById("share-input");
+            const statusElement = document.getElementById("copy-status");
+
+            navigator.clipboard.writeText(copyText.value)
+                .then(() => {
+                    statusElement.style.display = 'block';
+                    setTimeout(() => {  
+                        statusElement.style.display = 'none';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy text using Clipboard API:', err);
+                });
+        }
+    </script>
 {% endblock %}

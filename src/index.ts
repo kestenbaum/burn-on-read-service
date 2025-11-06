@@ -22,28 +22,27 @@ nunjucks.configure(viewsPath, {
     watch: true,
 })
 
-app.get("/", async (req: Request, res: Response) => {
-    await res.render("index.html")
+app.get("/", (req: Request, res: Response) => {
+    res.render("index.html")
 })
 
+let user = ""
 
 app.post("/create", (req: Request, res: Response) => {
-    const userInput = req.body.message;
+    user = req.body.message;
     const messageId = v4();
-    messages[messageId] = userInput.trim();
+    messages[messageId] = user.trim();
 
     const shareLink = `${req.protocol}://${req.get('host')}/message/${messageId}`;
     fs.writeFile("example.txt", shareLink);
     res.render('link.html', { shareLink });
-    console.log(`This is a userInput: ${userInput}`);
+    console.log(`This is a userInput: ${user}`);
 })
 
 app.get('/message/:id', 
     burnOnReadMiddleware,
     (req: Request, res: Response) => {
-        res.render('read.html', {
-           
-        });
+        res.render('read.html', { user });
     }
 );
 

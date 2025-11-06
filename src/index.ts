@@ -3,9 +3,8 @@ import nunjucks from "nunjucks";
 import path from "path";
 import { v4 } from "uuid";
 import { burnOnReadMiddleware } from "./middlewares/burnOnReadMiddleware";
-import { BurnRequest, messages } from "./types";
 import type { Request, Response } from "express";
-import { promises as fs} from "fs";
+import fs from "fs";
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -26,26 +25,29 @@ app.get("/", (req: Request, res: Response) => {
     res.render("index.html")
 })
 
-let user = ""
-
-app.post("/create", (req: Request, res: Response) => {
-    user = req.body.message;
+app.post("/create", async  (req: Request, res: Response) => {
+    let userName = req.body.message.trim();
     const messageId = v4();
-    messages[messageId] = user.trim();
 
-    const shareLink = `${req.protocol}://${req.get('host')}/message/${messageId}`;
-    fs.writeFile("example.txt", shareLink);
-    res.render('link.html', { shareLink });
-    console.log(`This is a userInput: ${user}`);
+    const userLink = `${req.protocol}://${req.get('host')}/message/${messageId}`;
+
+    let data = {
+        url: userLink,
+        name: userName
+    }
+
+    const parsed = JSON.stringify(data, null)
+    await fs.promises.writeFile(path.join(process.cwd(), 'parsed.json'), parsed, 'utf8');
+    res.render('link.html', { userLink })
 })
 
 app.get('/message/:id', 
     burnOnReadMiddleware,
     (req: Request, res: Response) => {
-        res.render('read.html', { user });
+        const userName = (req as any).user; 
+        res.render('read.html', { userName });
     }
 );
-
 
 app.listen(PORT, "0.0.0.0", () => {
     console.log("server listen")

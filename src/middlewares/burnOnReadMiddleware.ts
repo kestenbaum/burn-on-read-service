@@ -2,15 +2,18 @@ import fs from 'fs';
 import path from 'path';
 import { Request, Response, NextFunction } from 'express';
 
+
 export const burnOnReadMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const filePath = path.join(process.cwd(), 'example.txt');
+  const filePath = path.join(process.cwd(), 'parsed.json');
 
   if (fs.existsSync(filePath)) {
-    await fs.unlink(filePath, (err) => {
-      if (err) console.error('Error:', err);
-      else console.log('example.txt deleted');
-    });
+    const content = await fs.promises.readFile(filePath, 'utf8');
+    const parsed = JSON.parse(content);
 
+    (req as any).user = parsed.name;
+    (req as any).link = parsed.url; 
+
+    await fs.promises.unlink(filePath);
   }
 
   next();

@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 
 
 export const burnOnReadMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const filePath = path.join(process.cwd(), 'parsed.json');
+  const filePath = path.join(process.cwd(), 'data.json');
 
   if (fs.existsSync(filePath)) {
     const content = await fs.promises.readFile(filePath, 'utf8');

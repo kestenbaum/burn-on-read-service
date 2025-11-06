@@ -37,7 +37,7 @@ app.post("/create", async  (req: Request, res: Response) => {
     }
 
     const parsed = JSON.stringify(data, null)
-    await fs.promises.writeFile(path.join(process.cwd(), 'parsed.json'), parsed, 'utf8');
+    await fs.promises.writeFile(path.join(process.cwd(), 'data.json'), parsed, 'utf8');
     res.render('link.html', { userLink })
 })
 
